@@ -1,8 +1,9 @@
 import React from "react";
 import CartItem from "../components/CartItem";
 import { useSelector } from "react-redux";
+import { getAllCart } from "../../store/cartListReducer";
 export default function Cart() {
-  const cartItems = useSelector((state) => state.cartlist);
+  const cartItems = useSelector(getAllCart);
 
   return (
     <div className="cart-container">
@@ -14,19 +15,17 @@ export default function Cart() {
           <div className="quantity">Quantity</div>
           <div className="total">Total</div>
         </div>
-        {cartItems.map(
-          ({ productId, title, rating, price, imageUrl, quantity }) => (
-            <CartItem
-              productId={productId}
-              key={productId}
-              title={title}
-              price={price}
-              quantity={quantity}
-              imageUrl={imageUrl}
-              rating={rating.rate}
-            />
-          )
-        )}
+        {cartItems.map(({ id, title, rating, price, image, quantity }) => (
+          <CartItem
+            productId={id}
+            key={id}
+            title={title}
+            price={price}
+            quantity={quantity}
+            imageUrl={image}
+            rating={rating.rate}
+          />
+        ))}
         <div className="cart-header cart-item-container">
           <div></div>
           <div></div>

@@ -5,6 +5,17 @@ import wishListReducer from "./wishListReducer";
 import cartListReducer from "./cartListReducer";
 import { addCartItem } from "./cartListReducer";
 import { configureStore } from "@reduxjs/toolkit";
+import { apiMiddleware } from "./middleware/apiMiddleware";
+
+export const store = configureStore({
+  reducer: {
+    products: productReducer,
+    wishList: wishListReducer,
+    cartlist: cartListReducer,
+  },
+  middleware: () => [apiMiddleware],
+});
+
 // const initialState = {
 //   product: productlist,
 //   cartitems: [],
@@ -47,14 +58,6 @@ import { configureStore } from "@reduxjs/toolkit";
 //       return state;
 //   }
 // }
-
-export const store = configureStore({
-  reducer: {
-    product: productReducer,
-    wishList: wishListReducer,
-    cartlist: cartListReducer,
-  },
-});
 
 // store.dispatch({ type: CART_ITEM_ADD, payload: { productID: 2 } });
 // store.dispatch({ type: CART_ITEM_ADD, payload: { productID: 2 } });

@@ -1,40 +1,61 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { myCreateSlice } from "../redux-tolkit";
 const findIndex = (state, action) =>
-  state.findIndex(
+  state.list.findIndex(
     (cartItem) => cartItem.productId === action.payload.productId
   );
 
 const mySlice = myCreateSlice({
   name: "cart",
-  initialState: [],
+  initialState: {
+    loading: false,
+    list: [],
+    error: "",
+  },
   reducers: {
+    loadData(state, action) {
+      state.list = action.payload.products;
+      state.loading = false;
+      state.error = "";
+      console.log(action.payload.products);
+    },
     addCartItem(state, action) {
       const existingItem = findIndex(state, action);
       if (existingItem !== -1) {
-        state[existingItem].quantity += 1;
+        state.list[existingItem].quantity += 1;
       } else {
-        state.push({ ...action.payload, quantity: 1 });
+        state.list.push({ ...action.payload, quantity: 1 });
       }
     },
     removeCartItem(state, action) {
       const existingItem = findIndex(state, action);
-      state.splice(existingItem, 1);
+      state.list.splice(existingItem, 1);
     },
     increaseCartItemQuantity(state, action) {
       const existingItem = findIndex(state, action);
-      state[existingItem].quantity += 1;
+      state.list[existingItem].quantity += 1;
     },
     decreaseCartItemQuantity(state, action) {
       const existingItem = findIndex(state, action);
-      state[existingItem].quantity -= 1;
-      if (state[existingItem].quantity === 0) {
-        state.splice(existingItem, 1);
+      state.list[existingItem].quantity -= 1;
+      if (state.list[existingItem].quantity === 0) {
+        state.list.splice(existingItem, 1);
       }
     },
   },
 });
 
+const getCartItems = ({ products, cartlist }) => {
+  return cartlist.list.map(({ productId, quantity }) => {
+    const cartProduct = products.list.find(
+      (product) => product.id == productId
+    );
+
+    return { ...cartProduct, quantity };
+  });
+};
+
+export const getAllCart = createSelector(getCartItems, (state) => state);
 // const slice = createSlice({
 //   name: "cart",
 //   initialState: [],
@@ -70,6 +91,7 @@ export const {
   removeCartItem,
   increaseCartItemQuantity,
   decreaseCartItemQuantity,
+  loadData,
 } = mySlice.actions;
 export default mySlice.reducer;
 
